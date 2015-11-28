@@ -5,11 +5,14 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
 public class Game extends Activity {
+
 
     static MediaPlayer soundtrack;
     @Override
@@ -27,6 +30,7 @@ public class Game extends Activity {
         setContentView(new GamePanel(this));
         soundtrack = MediaPlayer.create(this, R.raw.total_eclipse_of_the_heart);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
