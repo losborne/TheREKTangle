@@ -12,7 +12,7 @@ public class Player extends GameObject {
     private Bitmap image;
     private int score;
     private boolean touched; // if player is touched
-    private double dy;
+    private double dya;
     private boolean up;
     private boolean playing;
     private long startTime;
