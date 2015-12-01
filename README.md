@@ -1,7 +1,7 @@
 # TheREKTangle
 
 <h1>LIST OF THINGS TO DO</h1>
-<p>Core Functionality:</p>
+<p><b>Core Functionality:</b></p>
 1. Draw Background
 2. Draw Player
 3. Make Player Move 
@@ -15,8 +15,9 @@
 11. Implement More Levels.
 12. Keep Track of Score
 13. Display Score at end of Game
-14. Make Main menu with buttons
-Icing on the cake:
+14. Make Main menu with buttons <br>
+
+<p><b>Icing on the cake:</b></p>
 1. Make everything look pretty
 2. Add music
 3. Add animations (explosion for collision?)
