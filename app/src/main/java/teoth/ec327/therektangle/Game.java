@@ -28,8 +28,10 @@ public class Game extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
-        // Play background music
+
         setContentView(new GamePanel(this));
+
+        // Play background music
         soundtrack = MediaPlayer.create(this, R.raw.total_eclipse_of_the_heart);
     }
 
@@ -60,5 +62,8 @@ public class Game extends Activity {
     {
         soundtrack.start();
     }
-    public static void stopMusic(View view) { soundtrack.stop();}
+    public static void stopMusic(View view)
+    {
+        soundtrack.stop();
+    }
 }
