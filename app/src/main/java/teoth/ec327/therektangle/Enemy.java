@@ -16,27 +16,21 @@ public class Enemy extends GameObject {
     private long startTime;
     private char side; // which side the enemy comes from
 
-    public Enemy(Bitmap b, int w, int h, char side, int s, int x, int y)
+    public Enemy(Bitmap b, int w, int h, char side, int s, int x, int y, int v)
     {
         image = b;
         this.width = w;
         this.height = h;
         this.score = s;
         this.side = side;
-
-        // set random speed
-        v = 8 + (int) (rand.nextDouble() * score / 29);
+        this.v = v;
 
         // don't make them TOO fast
         if (v >= 42){v = 42;}
 
         this.x = x;
         this.y = y;
-
-        // position will be random based on what side
-        if(side == 'r' || side == 'b')// need negative velocities to go the opposite way;
-            v=-v;
-    }
+            }
     public void update()
     {
         // velocities will be appropriate, set in constructor
@@ -52,7 +46,9 @@ public class Enemy extends GameObject {
                 this.y += v;
                 break;
             case 'b':
-                this.y +=v;
+                this.y += v;
+                break;
+            default:
                 break;
         }
     }

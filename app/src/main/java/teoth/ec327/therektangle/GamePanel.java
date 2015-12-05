@@ -34,12 +34,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
     private long enemiesStartTime;
     private long waveStartTime;
     private Random rand = new Random();
+    private int wLength = 5; // length of a wave in seconds
+    private char side; // what side the waves come from
+    private int enemyV; // enemy velocity
 
     public GamePanel(Context context)
     {
         // inheritance
         super(context);
-
+        waveStartTime = System.nanoTime();
+        side = 'r'; // start with right;
         //add the callback to the surfaceholder to intercept events
         getHolder().addCallback(this);
         thread = new MainThread(getHolder(), this);
@@ -119,44 +123,58 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
             bg.update();
             player.update();
             // add enemies on a timer
-            long enemiesSpawnTime = (System.nanoTime() - enemiesStartTime) / 1000000;
-            // just for right from now
-            // add other sides later !!!
-            if (enemiesSpawnTime > (2000 - player.getScore() / 4)) {
-                char side = 'l'; // control later for one side at a time!!!
-                int randX;
-                int randY;
+            long enemiesSpawnTime = (System.nanoTime() - enemiesStartTime) / 1000000; // ms is unit
+
+            // wave timer (ms)
+            long waveElapsedTime = (System.nanoTime() - waveStartTime) / 1000000;
+            if (enemiesSpawnTime > (1000 - player.getScore() / 4)) {
                 switch (side) {
                     case 'l':
-                        randX = 50; // off screen, same for others
-                        randY = 50; //(int) (rand.nextDouble() * (HEIGHT));
+                        this.spawn_left();
                         break;
                     case 'r':
-                        randX = WIDTH/2;
-                        randY = HEIGHT-50; //(int) (rand.nextDouble() * (HEIGHT));
+                        this.spawn_right();
                         break;
                     case 't':
-                        randX = WIDTH/2; //(int) (rand.nextDouble() * (WIDTH));
-                        randY = 50;
+                        this.spawn_top();
                         break;
                     case 'b':
-                        randX = WIDTH/2;//(int) (rand.nextDouble() * (WIDTH));
-                        randY = HEIGHT-50;
+                        this.spawn_bottom();
                         break;
                     default:
-                        randX = WIDTH  / 2;
-                        randY = HEIGHT / 2;
+                        this.spawn_right();
                         break;
                 }
-                randX*=this.getWidth()/WIDTH;
-                randY*=this.getHeight()/HEIGHT;
-
-                if(enemies.size() <= 50) // max # of enemies
-                    enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(), R.drawable.enemyside), 25, 10, side, player.getScore(), randX, randY));
                 enemiesStartTime = System.nanoTime();
-            }
-            // reset time for next enemy
 
+                 // move to next side for next wave
+                if(waveElapsedTime > (wLength * 1000)) // new wave every 10 seconds
+                {
+                    switch(side)
+                    {
+                        case 'r':
+                            side = 'b';
+                            waveStartTime = System.nanoTime();
+                            break;
+                        case 'b':
+                            side = 'l';
+                            waveStartTime = System.nanoTime();
+                            break;
+                        case 'l':
+                            side = 't';
+                            waveStartTime = System.nanoTime();
+                            break;
+                        case 't':
+                            side = 'r';
+                            waveStartTime = System.nanoTime();
+                            break;
+                        default:
+                            side = 'r';
+                            waveStartTime = System.nanoTime();
+                            break;
+                    }
+                }
+            }
         }
 
         // loop through enemies
@@ -166,8 +184,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
             // !!!
 
             // remove off screen enemies
-            if (e.getX() <= -100 || e.getY() < - -100
-                    || e.getX() > WIDTH+100 || e.getY() > HEIGHT+100) {
+            if (e.getX() <= -100 || e.getY() < -100
+                    || e.getX() > (WIDTH+200) || e.getY() > (HEIGHT+200)) {
                 enemies.remove(e);
             }
         }
@@ -198,5 +216,65 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
             canvas.restoreToCount(savedState);
 
         }
+    }
+    public void spawn_top()
+    {
+        int randX = (int) (rand.nextDouble() * (WIDTH));
+        int randY = -20;
+
+        // set semi-random  velocity
+        enemyV = 8 + (int) (rand.nextDouble() * player.getScore() / 29);
+
+        if(enemies.size() <= 100) // max # of enemies
+        {
+            enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(),
+                    R.drawable.enemytopbottom), 10, 25, side, player.getScore(), randX, randY, enemyV));
+        }
+        return;
+    }
+    public void spawn_bottom()
+    {
+        int randX = (int) (rand.nextDouble() * (WIDTH));
+        int randY = HEIGHT + 50;
+
+        // set semi-random  velocity
+        enemyV = (-1)*(8 + (int) (rand.nextDouble() * player.getScore() / 29));
+
+        if(enemies.size() <= 100) // max # of enemies
+        {
+            enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(),
+                    R.drawable.enemytopbottom), 10, 25, side, player.getScore(), randX, randY, enemyV));
+        }
+        return;
+    }
+    public void spawn_left()
+    {
+        int randX = -50; // off screen, same for others
+        int randY = (int) (rand.nextDouble() * (HEIGHT));
+
+        // set semi-random  velocity
+        enemyV = 8 + (int) (rand.nextDouble() * player.getScore() / 29);
+
+        if(enemies.size() <= 100) // max # of enemies
+        {
+            enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(),
+                    R.drawable.enemyside), 25, 10, side, player.getScore(), randX, randY, enemyV));
+        }
+        return;
+    }
+    public void spawn_right()
+    {
+        int randX = WIDTH+50;
+        int randY = (int) (rand.nextDouble() * (HEIGHT));
+
+        // set semi-random  velocity
+        enemyV = (-1)*(8 + (int) (rand.nextDouble() * player.getScore() / 29));
+
+        if(enemies.size() <= 100) // max # of enemies
+        {
+            enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(),
+                    R.drawable.enemyside), 25, 10, side, player.getScore(), randX, randY, enemyV));
+        }
+        return;
     }
 }
