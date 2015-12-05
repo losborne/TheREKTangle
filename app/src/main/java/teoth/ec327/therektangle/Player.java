@@ -3,7 +3,10 @@ package teoth.ec327.therektangle;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.view.animation.Animation;
+
+import java.util.Vector;
 
 /**
  * Created by icgn1 on 11/28/2015.
@@ -14,7 +17,11 @@ public class Player extends GameObject {
     private boolean touched; // if player is touched
     private double dx;
     private double dy;
+    private double friction;
+    private double destX;
+    private double destY;
     private boolean moving;
+    private Vector<Point> pathCoords;
     private double v; // velocity
     private boolean playing;
     private long startTime;
@@ -31,7 +38,10 @@ public class Player extends GameObject {
         // initial velocity is 0, score is 0
         dx = 0;
         dy = 0;
-        v = 1; // adjust for proper game feel
+        moving = false;
+        friction = 0.5; // how fast does the object slow down?
+
+        v = 20; // adjust for proper game feel
         score = 0;
         height = h;
         width = w;
@@ -39,11 +49,27 @@ public class Player extends GameObject {
 
     public void update(){
         // update the position of the player
+//        dx *= friction;
+//        dy *= friction;
+        this.x += dx;
+        this.y += dy;
         if (moving) {
-            this.x += dx;
-            this.y += dy;
+            // update velocity vectors based on position
+            setDx(destX);
+            setDy(destY);
         }
 
+        // reached destination
+        if(    (this.x >= destX - v) && (this.x <= destX + v)
+            && (this.y >= destY - v) && (this.y <= destY))
+        {
+            // stop moving
+            dx = 0;
+            dy = 0;
+            destX = this.x;
+            destY = this.y;
+            moving = false;
+        }
         // Update score every 0.1 seconds
         // playing longer makes score go up
         long elapsed = (System.nanoTime() - startTime)/1000000;
@@ -80,38 +106,41 @@ public class Player extends GameObject {
     {
         this.moving = b;
     }
-
+    public void setDestX(double newDestX)
+    {
+        this.destX = newDestX;
+    }
+    public void setDestY(double newDestY)
+    {
+        this.destY = newDestY;
+    }
     public void setDx(double eventX)
     {
-        this.dx = v * (eventX - this.x);
+        destX = eventX;
+        // x times unit vector
+        this.dx = v * (eventX - this.x)/Math.sqrt(eventX*eventX + x*x);
+
+        // cap movement speed
+        if (dx > 10)
+            dx = 10;
+        if (dx < -10)
+            dx = -10;
     }
     public void setDy(double eventY)
     {
-        this.dy = v * (eventY - this.y);
+        destY = eventY;
+        // v time unit vector
+        this.dy = v * (eventY - this.y)/Math.sqrt(eventY*eventY + y*y);
+
+        // cap movement speed
+        if(dy > 10)
+            dy = 10;
+        if(dy < -10)
+            dy = -10;
     }
+
     // draw centered at (x,y)
     public void draw(Canvas canvas) {
         canvas.drawBitmap(image, x - (image.getWidth() / 2), y - (image.getHeight() / 2), null);
     }
-
-//    public void onTouchEvent(int eventX, int eventY) {
-//        // update velocity vector to point to touch event
-//        this.dx = v * (eventX - x);
-//        this.dy = v * (eventY - y);
-//
-//        /* If we care about the image being touched !!!
-//        if (eventX >= (x - image.getWidth() / 2) && (eventX <= (x + image.getWidth()/2))) {
-//            if (eventY >= (y - image.getHeight() / 2) && (y <= (y + image.getHeight() / 2))) {
-//                // player touched
-//                setTouched(true);
-//            }
-//            else {
-//                setTouched(false);
-//            }
-//        }
-//        else {
-//            setTouched(false);
-//        }
-//        */
-//    }
 }

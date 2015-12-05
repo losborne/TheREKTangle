@@ -1,6 +1,8 @@
 package teoth.ec327.therektangle;
 /*
 Game replaced MainActivity for this app
+Resources used:
+https://www.youtube.com/channel/UCKkABMS8IVJlu0G4ipPyZaA
  */
 import android.app.Activity;
 import android.media.MediaPlayer;

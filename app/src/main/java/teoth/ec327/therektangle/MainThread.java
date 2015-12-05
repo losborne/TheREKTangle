@@ -63,10 +63,9 @@ public class MainThread extends Thread
 
             // Calculate FPS (For debugging and testing
             totalTime += System.nanoTime()-startTime;
-            frameCount++;
             if(frameCount == FPS)
             {
-              // only check the FPS every 30 frames
+                // only check the FPS every 30 frames
                 averageFPS = 1000/((totalTime/frameCount)/1000000);
 
                 // reset for next time
@@ -74,6 +73,7 @@ public class MainThread extends Thread
                 totalTime = 0;
                 System.out.println(averageFPS);
             }
+            frameCount++;
         }
     }
     public void setRunning(boolean b)

@@ -3,6 +3,9 @@ package teoth.ec327.therektangle;
 /**
  * GamePanel represents playing the game and controls the objects on the screen during gameplay
  * Created by Luke on 11/22/2015.
+ * Resources used to implement this class
+ *  http://stackoverflow.com/questions/20817925/how-to-make-object-follow-touch-movement-on-screenhttp://stackoverflow.com/questions/20817925/how-to-make-object-follow-touch-movement-on-screen
+ *
  */
 
 import android.content.Context;
@@ -11,9 +14,10 @@ import android.graphics.Canvas;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 
 
-public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
+public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!!, View.OnTouchListener
 {
     // will change depending on phone size
     public static final int WIDTH = 856;
@@ -72,7 +76,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
-        if (event.getAction() == MotionEvent.ACTION_DOWN){
+        double scaledX = (double) (event.getX()/this.getWidth() * WIDTH);
+        double scaledY = (double) (event.getY()/this.getHeight() * HEIGHT);
+        if (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE){
             // might need to be controlled by a start button later !!!
             if (!player.getPlaying()){
                 player.setPlaying(true);
@@ -81,15 +87,20 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
                 player.setMoving(true);
 
             // update the motion vectors
-            player.setDx((double) event.getX());
-            player.setDy((double)event.getY());
+            player.setDestX(scaledX);
+            player.setDestY(scaledY);
             return true;
         }
 
         if(event.getAction() == MotionEvent.ACTION_UP){
+            player.setPlaying(false);
+            player.setDestX((double) player.getX());
+            player.setDestY((double) player.getY());
+            player.setDx(0);
+            player.setDy(0);
             return true;
         }
-        return super.onTouchEvent(event);
+       return super.onTouchEvent(event);
     }
 
     public void update()
