@@ -1,5 +1,7 @@
 package teoth.ec327.therektangle;
-
+/*
+Game replaced MainActivity for this app
+ */
 import android.app.Activity;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -26,11 +28,10 @@ public class Game extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
-
+        // Play background music
         setContentView(new GamePanel(this));
         soundtrack = MediaPlayer.create(this, R.raw.total_eclipse_of_the_heart);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -54,6 +55,7 @@ public class Game extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    // For Music
     public static void playMusic(View view)
     {
         soundtrack.start();

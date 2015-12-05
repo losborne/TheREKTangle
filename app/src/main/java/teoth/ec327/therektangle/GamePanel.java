@@ -1,6 +1,7 @@
 package teoth.ec327.therektangle;
 
 /**
+ * GamePanel represents playing the game and controls the objects on the screen during gameplay
  * Created by Luke on 11/22/2015.
  */
 
@@ -14,19 +15,23 @@ import android.view.SurfaceView;
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 {
+    // will change depending on phone size
     public static final int WIDTH = 856;
     public static final int HEIGHT = 480;
+
+    // declare game elements
     private MainThread thread;
     private Background bg;
     private Player player;
 
     public GamePanel(Context context)
     {
+        // inheritance
         super(context);
-
 
         //add the callback to the surfaceholder to intercept events
         getHolder().addCallback(this);
+
 
         thread = new MainThread(getHolder(), this);
 
@@ -54,13 +59,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     @Override
     public void surfaceCreated(SurfaceHolder holder){
 
+        // instantiate all objects for game
         bg = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background));
         player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.rektplayer), 0, 0, 50, 50);
-        //bg.setVector(-5);
+
         //we can safely start the game loop
         thread.setRunning(true);
         thread.start();
-        Game.playMusic(this);
+        Game.playMusic(this); // example sound playing
 
     }
     @Override
@@ -70,7 +76,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             if (!player.getPlaying()){
                 player.setPlaying(true);
             }
-
             return true;
         }
 
@@ -82,6 +87,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
     public void update()
     {
+        // game in play
         if (player.getPlaying()){
           bg.update();
           player.update();

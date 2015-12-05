@@ -1,6 +1,7 @@
 package teoth.ec327.therektangle;
 
 /**
+ * Manage the background for the game, which is a png image in .../res
  * Created by Luke on 11/22/2015.
  */
 import android.graphics.Bitmap;
@@ -17,21 +18,10 @@ public class Background {
     }
     public void update()
     {
-        x+=dx;
-        if(x < -GamePanel.WIDTH){
-            x=0;
-        }
+        // Update background if we want it to change
     }
     public void draw(Canvas canvas)
     {
         canvas.drawBitmap(image, x, y,null);
-        if(x<0)
-        {
-            canvas.drawBitmap(image, x + GamePanel.WIDTH, y, null);
-        }
-    }
-    public void setVector(int dx)
-    {
-        this.dx = dx;
     }
 }

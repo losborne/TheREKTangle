@@ -54,9 +54,6 @@ public class MainThread extends Thread
                 }
             }
 
-
-
-
             timeMillis = (System.nanoTime() - startTime) / 1000000;
             waitTime = targetTime-timeMillis;
 
@@ -64,11 +61,15 @@ public class MainThread extends Thread
                 this.sleep(waitTime);
             }catch(Exception e){}
 
+            // Calculate FPS (For debugging and testing
             totalTime += System.nanoTime()-startTime;
             frameCount++;
             if(frameCount == FPS)
             {
+              // only check the FPS every 30 frames
                 averageFPS = 1000/((totalTime/frameCount)/1000000);
+
+                // reset for next time
                 frameCount =0;
                 totalTime = 0;
                 System.out.println(averageFPS);
