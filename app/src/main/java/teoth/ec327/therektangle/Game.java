@@ -60,4 +60,5 @@ public class Game extends Activity {
     {
         soundtrack.start();
     }
+    public static void stopMusic(View view) { soundtrack.stop();}
 }

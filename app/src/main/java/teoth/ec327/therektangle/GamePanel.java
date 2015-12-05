@@ -49,7 +49,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         {
             try{thread.setRunning(false);
                 thread.join();
-
+                Game.stop(this); // example sound playing
             }catch(InterruptedException e){e.printStackTrace();}
             retry = false;
         }
@@ -66,16 +66,23 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         //we can safely start the game loop
         thread.setRunning(true);
         thread.start();
-        Game.playMusic(this); // example sound playing
+        Game.stopMusic(this); // example sound playing
 
     }
     @Override
     public boolean onTouchEvent(MotionEvent event)
     {
         if (event.getAction() == MotionEvent.ACTION_DOWN){
+            // might need to be controlled by a start button later !!!
             if (!player.getPlaying()){
                 player.setPlaying(true);
             }
+            if(!player.getMoving())
+                player.setMoving(true);
+
+            // update the motion vectors
+            player.setDx((double) event.getX());
+            player.setDy((double)event.getY());
             return true;
         }
 
