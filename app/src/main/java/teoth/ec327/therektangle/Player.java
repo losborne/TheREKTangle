@@ -31,7 +31,7 @@ public class Player extends GameObject {
         // initial velocity is 0, score is 0
         dx = 0;
         dy = 0;
-        v = 10; // adjust for proper game feel
+        v = 1; // adjust for proper game feel
         score = 0;
         height = h;
         width = w;

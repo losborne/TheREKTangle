@@ -66,7 +66,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         //we can safely start the game loop
         thread.setRunning(true);
         thread.start();
-        Game.stopMusic(this); // example sound playing
+        Game.playMusic(this); // example sound playing
 
     }
     @Override
