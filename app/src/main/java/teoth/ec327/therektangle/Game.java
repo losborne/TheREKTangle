@@ -18,7 +18,7 @@ import android.view.WindowManager;
 public class Game extends Activity {
 
 
-    static MediaPlayer soundtrack;
+    //static MediaPlayer soundtrack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +34,7 @@ public class Game extends Activity {
         setContentView(new GamePanel(this));
 
         // Play background music
-        soundtrack = MediaPlayer.create(this, R.raw.total_eclipse_of_the_heart);
+        //soundtrack = MediaPlayer.create(this, R.raw.total_eclipse_of_the_heart);
     }
 
     @Override
@@ -60,12 +60,12 @@ public class Game extends Activity {
     }
 
     // For Music
-    public static void playMusic(View view)
-    {
-        soundtrack.start();
-    }
-    public static void stopMusic(View view)
-    {
-        soundtrack.stop();
-    }
+//    public static void playMusic(View view)
+//    {
+//        soundtrack.start();
+//    }
+//    public static void stopMusic(View view)
+//    {
+//        soundtrack.stop();
+//    }
 }

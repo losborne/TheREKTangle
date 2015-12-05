@@ -14,20 +14,17 @@ import java.util.Vector;
 public class Player extends GameObject {
     private Bitmap image;
     private int score;
-    private boolean touched; // if player is touched
     private double dx;
     private double dy;
-    private double friction;
     private double destX;
     private double destY;
     private boolean moving;
-    private Vector<Point> pathCoords;
     private double v; // velocity
     private boolean playing;
     private long startTime;
 
-    public Player(Bitmap res, int x, int y, int w, int h){
-        image = res;
+    public Player(Bitmap b, int x, int y, int w, int h){
+        image = b;
 
         // Initial position is in the middle of the screen
         x = GamePanel.WIDTH/2;
@@ -39,7 +36,6 @@ public class Player extends GameObject {
         dx = 0;
         dy = 0;
         moving = false;
-        friction = 0.5; // how fast does the object slow down?
 
         v = 20; // adjust for proper game feel
         score = 0;
@@ -91,12 +87,6 @@ public class Player extends GameObject {
     }
     public void resetScore(){
         score = 0;
-    }
-    public boolean isTouched() {
-        return touched;
-    }
-    public void setTouched(boolean touched) {
-        this.touched = touched;
     }
     boolean getMoving()
     {

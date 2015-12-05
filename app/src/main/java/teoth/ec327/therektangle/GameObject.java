@@ -37,6 +37,7 @@ public abstract class GameObject {
         return width;
     }
 
+    // used for collision detection
     public Rect getRectangle(){
         return new Rect(x, y, x + width, y + height);
     }
