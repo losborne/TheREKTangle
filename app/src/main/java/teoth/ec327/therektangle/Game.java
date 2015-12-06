@@ -29,12 +29,25 @@ public class Game extends Activity {
 
         // full screen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        setContentView(new GamePanel(this));
+        setContentView(R.layout.menu_game);
+        //setContentView(new GamePanel(this));
 
         // Play background music
+        soundtrack = MediaPlayer.create(this, R.raw.menu_screen);
+        soundtrack.start();
+    }
+    public void onClickStartGame(View v){
+        soundtrack.stop();
+        setContentView(new GamePanel(this));
         soundtrack = MediaPlayer.create(this, R.raw.rektangle_music);
     }
+
+    public void onClickInstructions(View v){
+        setContentView(R.layout.instructions_game);
+        soundtrack = MediaPlayer.create(this, R.raw.menu_screen);
+        soundtrack.start();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -42,6 +55,7 @@ public class Game extends Activity {
         getMenuInflater().inflate(R.menu.menu_game, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
