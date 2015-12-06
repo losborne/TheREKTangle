@@ -28,11 +28,14 @@ public class Game extends Activity {
 
         // full screen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        setContentView(new GamePanel(this));
+        setContentView(R.layout.menu_game);
+        //setContentView(new GamePanel(this));
 
         // Play background music
         //soundtrack = MediaPlayer.create(this, R.raw.total_eclipse_of_the_heart);
+    }
+    public void onClickStartGame(View v){
+        setContentView(new GamePanel(this));
     }
 
     @Override
