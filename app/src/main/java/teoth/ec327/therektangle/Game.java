@@ -29,8 +29,6 @@ public class Game extends Activity {
         // full screen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-
-
         setContentView(new GamePanel(this));
 
         // Play background music

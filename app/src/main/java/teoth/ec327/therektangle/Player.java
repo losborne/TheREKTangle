@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.util.Log;
-import android.view.animation.Animation;
 
 import java.util.Vector;
 
@@ -13,7 +12,8 @@ import java.util.Vector;
  * Created by icgn1 on 11/28/2015.
  */
 public class Player extends GameObject {
-    private Bitmap image;
+    private Bitmap sprites;
+    private Animation animation = new Animation();
     private int score;
     private double dx;
     private double dy;
@@ -24,13 +24,20 @@ public class Player extends GameObject {
     private boolean playing;
     private long startTime;
 
-    public Player(Bitmap b, int x, int y, int w, int h){
-        image = b;
+    // default player constructor
+    public Player(Bitmap b, int x, int y, int w, int h)
+    {
+        Bitmap image[] = new Bitmap[1];
+         sprites = b;
+        image[0] = Bitmap.createBitmap(sprites,0,0,50,50);
+
+        animation.setFrames(image);
+        animation.setDelay(10);
 
         // Initial position is in the middle of the screen
-        x = GamePanel.WIDTH/2;
+        x = GamePanel.WIDTH / 2;
         this.x = x;
-        y = GamePanel.HEIGHT/2;
+        y = GamePanel.HEIGHT / 2;
         this.y = y;
 
         // initial velocity is 0, score is 0
@@ -43,6 +50,36 @@ public class Player extends GameObject {
         height = h;
         width = w;
     }
+    // animated player constructor
+    public Player(Bitmap b, int x, int y, int w, int h, int nFrames){
+        // make array of different player animation sprites
+        Bitmap[] image = new Bitmap[nFrames];
+        sprites = b;
+        height = h;
+        width = w;
+
+        for(int i = 0; i < image.length; i++)
+        {
+            image[i] = Bitmap.createBitmap(sprites, 0, i * height, width, height);
+        }
+
+        animation.setFrames(image);
+        animation.setDelay(50);
+
+        // Initial position is in the middle of the screen
+        x = GamePanel.WIDTH / 2;
+        this.x = x;
+        y = GamePanel.HEIGHT / 2;
+        this.y = y;
+
+        // initial velocity is 0, score is 0
+        dx = 0;
+        dy = 0;
+        moving = false;
+
+        v = 40; // adjust for proper game feel
+        score = 0;
+    }
 
     public void update(){
         // update the position of the player
@@ -50,14 +87,12 @@ public class Player extends GameObject {
         {
             this.x += dx;
             this.y += dy;
-            if (moving) {
-                // update velocity vectors based on position
-                setDx(destX);
-                setDy(destY);
-            }
+            // update velocity vectors based on position
+            setDx(destX);
+            setDy(destY);
         }
         // reached destination
-        else if(moving &&   (this.x >= destX - v) && (this.x <= destX + v)
+        else if((this.x >= destX - v) && (this.x <= destX + v)
             && (this.y >= destY - v) && (this.y <= destY))
         {
             // stop moving
@@ -85,6 +120,7 @@ public class Player extends GameObject {
             Log.d("score", "Score is: " + score);
             startTime = System.nanoTime();
         }
+        animation.update();
     }
 
     // Getters and Setters
@@ -143,7 +179,14 @@ public class Player extends GameObject {
 
     // draw centered at (x,y)
     public void draw(Canvas canvas) {
-        canvas.drawBitmap(image, x - (image.getWidth() / 2), y - (image.getHeight() / 2), null);
+        // animated version
+        try {
+            canvas.drawBitmap(animation.getImage(), x, y, null);
+        }catch(Exception e){
+            Log.d("draw", "Player couldn't be drawn.");
+        }
+        // for unanimated version
+        // canvas.drawBitmap(image, x - (image.getWidth() / 2), y - (image.getHeight() / 2), null);
     }
     public void reset_player()
     {

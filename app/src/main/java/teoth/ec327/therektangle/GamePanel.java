@@ -76,7 +76,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
 
         // instantiate all objects for game
         bg = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background));
-        player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.player_default), 0, 0, 50, 50);
+        //animated
+        player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.player_animated), 0, 0, 50, 50,5);
+        // not animated
+        // player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.player_default), 0, 0, 50, 50);
+
+        // not animated
         enemies = new ArrayList<>();
 
         // initialize times
@@ -215,6 +220,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
         int randY = HEIGHT + 50;
 
         // set semi-random  velocity
+        // make top/bottom go slower than sides because there's less room
+        // !!!
         enemyV = (-1)*(8 + (int) (rand.nextDouble() * player.getScore() / 29));
         if(enemies.size() <= 50) {
             enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(),
