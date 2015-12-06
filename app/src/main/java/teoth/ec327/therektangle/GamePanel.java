@@ -210,7 +210,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
         enemyV = 8 + (int) (rand.nextDouble() * player.getScore() / 29);
         if(enemies.size() <= 50) {
             enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(),
-                    R.drawable.enemy_vertical_default), 10, 25, side, player.getScore(), randX, randY, enemyV));
+                    R.drawable.enemy_vertical_animated), 10, 25, side, player.getScore(), randX, randY, enemyV, 4));
         }
     }
     public void spawn_bottom()
@@ -225,7 +225,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
         enemyV = (-1)*(8 + (int) (rand.nextDouble() * player.getScore() / 29));
         if(enemies.size() <= 50) {
             enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(),
-                    R.drawable.enemy_vertical_default), 10, 25, side, player.getScore(), randX, randY, enemyV));
+                    R.drawable.enemy_vertical_animated), 10, 25, side, player.getScore(), randX, randY, enemyV, 4));
         }
     }
     public void spawn_left()
@@ -238,8 +238,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
         enemyV = 8 + (int) (rand.nextDouble() * player.getScore() / 29);
         if(enemies.size() <= 50) {
             enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(),
-                    R.drawable.enemy_horizontal_default), 25, 10, side,
-                    player.getScore(), randX, randY, enemyV));
+                    R.drawable.enemy_horizontal_animated), 25, 10, side,
+                    player.getScore(), randX, randY, enemyV, 4));
         }
 
     }
@@ -254,8 +254,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
 
         if(enemies.size() <= 50) {
             enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(),
-                    R.drawable.enemy_horizontal_default), 25, 10, side,
-                    player.getScore(), randX, randY, enemyV));
+                    R.drawable.enemy_horizontal_animated), 25, 10, side,
+                    player.getScore(), randX, randY, enemyV, 4));
         }
     }
 
