@@ -26,7 +26,7 @@ public class Enemy extends GameObject {
         this.v = v;
 
         // don't make them TOO fast
-        if (v >= 42){v = 42;}
+        if (this.v >= 42){this.v = 42;}
 
         this.x = x;
         this.y = y;
@@ -60,11 +60,11 @@ public class Enemy extends GameObject {
     @Override
     public int getHeight()
     {
-        return height - 10;
-    }
+        return height - 2;
+    } // adjust to make collisions feel natural
     @Override
     public int getWidth()
     {
-        return width - 10;
+        return width - 2;
     }
 }

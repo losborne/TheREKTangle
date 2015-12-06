@@ -11,10 +11,11 @@ package teoth.ec327.therektangle;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -34,7 +35,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
     private long enemiesStartTime;
     private long waveStartTime;
     private Random rand = new Random();
-    private int wLength = 5; // length of a wave in seconds
     private char side; // what side the waves come from
     private int enemyV; // enemy velocity
 
@@ -43,7 +43,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
         // inheritance
         super(context);
         waveStartTime = System.nanoTime();
-        side = 'r'; // start with right;
+        side = 'r'; //controls which side spawns first
+
         //add the callback to the surfaceholder to intercept events
         getHolder().addCallback(this);
         thread = new MainThread(getHolder(), this);
@@ -75,7 +76,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
 
         // instantiate all objects for game
         bg = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background));
-        player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.rektplayer), 0, 0, 50, 50);
+        player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.player_default), 0, 0, 50, 50);
         enemies = new ArrayList<>();
 
         // initialize times
@@ -92,12 +93,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
     {
         double scaledX = (double) (event.getX()/this.getWidth() * WIDTH);
         double scaledY = (double) (event.getY()/this.getHeight() * HEIGHT);
-        if (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE){
+        if (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE)
+        {
             // might need to be controlled by a start button later !!!
-            if (!player.getPlaying()){
+            if (!player.getPlaying())
                 player.setPlaying(true);
-            }
-            if(!player.getMoving())
+            if (!player.getMoving())
                 player.setMoving(true);
 
             // update the motion vectors
@@ -107,85 +108,62 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
         }
 
         if(event.getAction() == MotionEvent.ACTION_UP){
-            player.setPlaying(false);
-            player.setDestX((double) player.getX());
-            player.setDestY((double) player.getY());
-            player.setDx(0);
-            player.setDy(0);
+            // no longer moving, still playing
+            player.setMoving(false);
             return true;
         }
        return super.onTouchEvent(event);
     }
 
     public void update() {
+        // reset game state
+        if(!player.getPlaying())
+        {
+            player.reset_player();
+            //enemies.clear();
+        }
         // game in play
-        if (player.getPlaying()) {
+        if (player.getPlaying())
+        {
+            // update game elements
             bg.update();
             player.update();
+
             // add enemies on a timer
             long enemiesSpawnTime = (System.nanoTime() - enemiesStartTime) / 1000000; // ms is unit
 
             // wave timer (ms)
             long waveElapsedTime = (System.nanoTime() - waveStartTime) / 1000000;
-            if (enemiesSpawnTime > (1000 - player.getScore() / 4)) {
-                switch (side) {
-                    case 'l':
-                        this.spawn_left();
-                        break;
-                    case 'r':
-                        this.spawn_right();
-                        break;
-                    case 't':
-                        this.spawn_top();
-                        break;
-                    case 'b':
-                        this.spawn_bottom();
-                        break;
-                    default:
-                        this.spawn_right();
-                        break;
-                }
+            if (enemiesSpawnTime > (1000 - player.getScore() / 4))
+            {
+                choose_spawn();
                 enemiesStartTime = System.nanoTime();
-
-                 // move to next side for next wave
-                if(waveElapsedTime > (wLength * 1000)) // new wave every 10 seconds
-                {
-                    switch(side)
-                    {
-                        case 'r':
-                            side = 'b';
-                            waveStartTime = System.nanoTime();
-                            break;
-                        case 'b':
-                            side = 'l';
-                            waveStartTime = System.nanoTime();
-                            break;
-                        case 'l':
-                            side = 't';
-                            waveStartTime = System.nanoTime();
-                            break;
-                        case 't':
-                            side = 'r';
-                            waveStartTime = System.nanoTime();
-                            break;
-                        default:
-                            side = 'r';
-                            waveStartTime = System.nanoTime();
-                            break;
-                    }
-                }
+            }
+            // move to next side for next wave
+            int wLength = 5;
+            if(waveElapsedTime > (wLength * 1000)) // new wave every 10 seconds
+            {
+                choose_side();
             }
         }
 
         // loop through enemies
-        for (Enemy e : enemies) {
+        for (Enemy e : enemies)
+        {
             e.update();
-            // detect collisions
-            // !!!
+
+             //detect collisions
+            if(detect_collision(e,player))
+            {
+                enemies.clear();
+                player.reset_player();
+                break;
+            }
 
             // remove off screen enemies
             if (e.getX() <= -100 || e.getY() < -100
-                    || e.getX() > (WIDTH+200) || e.getY() > (HEIGHT+200)) {
+                    || e.getX() > (WIDTH+100) || e.getY() > (HEIGHT+100)) {
+                Log.d("sd", "DESTROYED AN ENEMY!  YAY IT WORKS");
                 enemies.remove(e);
             }
         }
@@ -202,16 +180,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
             bg.draw(canvas);
             player.draw(canvas);
 
-
             for(Enemy e: enemies)
             {
                 // only draw if on canvas
                 try {
                     e.draw(canvas);
                 }
-                catch(Exception e1){}
+                catch(Exception e1){
+                    Log.d("error", "Didn't draw an enemy");
+                }
             }
-
             // done drawing
             canvas.restoreToCount(savedState);
 
@@ -219,62 +197,110 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
     }
     public void spawn_top()
     {
+        Log.d("spawn", "Spawning top");
         int randX = (int) (rand.nextDouble() * (WIDTH));
         int randY = -20;
 
         // set semi-random  velocity
         enemyV = 8 + (int) (rand.nextDouble() * player.getScore() / 29);
-
-        if(enemies.size() <= 100) // max # of enemies
-        {
+        if(enemies.size() <= 50) {
             enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(),
-                    R.drawable.enemytopbottom), 10, 25, side, player.getScore(), randX, randY, enemyV));
+                    R.drawable.enemy_vertical_default), 10, 25, side, player.getScore(), randX, randY, enemyV));
         }
-        return;
     }
     public void spawn_bottom()
     {
+        Log.d("spawn", "Spawning bot");
         int randX = (int) (rand.nextDouble() * (WIDTH));
         int randY = HEIGHT + 50;
 
         // set semi-random  velocity
         enemyV = (-1)*(8 + (int) (rand.nextDouble() * player.getScore() / 29));
-
-        if(enemies.size() <= 100) // max # of enemies
-        {
+        if(enemies.size() <= 50) {
             enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(),
-                    R.drawable.enemytopbottom), 10, 25, side, player.getScore(), randX, randY, enemyV));
+                    R.drawable.enemy_vertical_default), 10, 25, side, player.getScore(), randX, randY, enemyV));
         }
-        return;
     }
     public void spawn_left()
     {
+        Log.d("spawn", "Spawning left");
         int randX = -50; // off screen, same for others
         int randY = (int) (rand.nextDouble() * (HEIGHT));
 
         // set semi-random  velocity
         enemyV = 8 + (int) (rand.nextDouble() * player.getScore() / 29);
-
-        if(enemies.size() <= 100) // max # of enemies
-        {
+        if(enemies.size() <= 50) {
             enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(),
-                    R.drawable.enemyside), 25, 10, side, player.getScore(), randX, randY, enemyV));
+                    R.drawable.enemy_horizontal_default), 25, 10, side,
+                    player.getScore(), randX, randY, enemyV));
         }
-        return;
+
     }
     public void spawn_right()
     {
+        Log.d("spawn", "Spawning right");
         int randX = WIDTH+50;
         int randY = (int) (rand.nextDouble() * (HEIGHT));
 
         // set semi-random  velocity
         enemyV = (-1)*(8 + (int) (rand.nextDouble() * player.getScore() / 29));
 
-        if(enemies.size() <= 100) // max # of enemies
-        {
+        if(enemies.size() <= 50) {
             enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(),
-                    R.drawable.enemyside), 25, 10, side, player.getScore(), randX, randY, enemyV));
+                    R.drawable.enemy_horizontal_default), 25, 10, side,
+                    player.getScore(), randX, randY, enemyV));
         }
-        return;
+    }
+
+    public boolean detect_collision(GameObject g1, GameObject g2)
+    {
+        /* if the hitboxes intersect, the objects collide. */
+        return Rect.intersects(g1.getRectangle(), g2.getRectangle());
+    }
+    private void choose_side()
+    {
+        switch(side)
+        {
+            case 'r':
+                side = 'b';
+                waveStartTime = System.nanoTime();
+                break;
+            case 'b':
+                side = 'l';
+                waveStartTime = System.nanoTime();
+                break;
+            case 'l':
+                side = 't';
+                waveStartTime = System.nanoTime();
+                break;
+            case 't':
+                side = 'r';
+                waveStartTime = System.nanoTime();
+                break;
+            default:
+                side = 'r';
+                waveStartTime = System.nanoTime();
+                break;
+        }
+    }
+    private void choose_spawn()
+    {
+        switch (side) {
+            case 'l':
+                this.spawn_left();
+                break;
+            case 'r':
+                this.spawn_right();
+                break;
+            case 't':
+                this.spawn_top();
+                break;
+            case 'b':
+                this.spawn_bottom();
+                break;
+            default:
+                this.spawn_right();
+                break;
+        }
     }
 }

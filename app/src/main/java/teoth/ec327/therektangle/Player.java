@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Point;
+import android.util.Log;
 import android.view.animation.Animation;
 
 import java.util.Vector;
@@ -37,7 +38,7 @@ public class Player extends GameObject {
         dy = 0;
         moving = false;
 
-        v = 20; // adjust for proper game feel
+        v = 40; // adjust for proper game feel
         score = 0;
         height = h;
         width = w;
@@ -45,18 +46,18 @@ public class Player extends GameObject {
 
     public void update(){
         // update the position of the player
-//        dx *= friction;
-//        dy *= friction;
-        this.x += dx;
-        this.y += dy;
-        if (moving) {
-            // update velocity vectors based on position
-            setDx(destX);
-            setDy(destY);
+        if(moving)
+        {
+            this.x += dx;
+            this.y += dy;
+            if (moving) {
+                // update velocity vectors based on position
+                setDx(destX);
+                setDy(destY);
+            }
         }
-
         // reached destination
-        if(    (this.x >= destX - v) && (this.x <= destX + v)
+        else if(moving &&   (this.x >= destX - v) && (this.x <= destX + v)
             && (this.y >= destY - v) && (this.y <= destY))
         {
             // stop moving
@@ -66,11 +67,22 @@ public class Player extends GameObject {
             destY = this.y;
             moving = false;
         }
+        else
+        {
+            dx = 0;
+            dy = 0;
+            destX = this.x;
+            destY = this.y;
+            moving = false;
+        }
+
         // Update score every 0.1 seconds
         // playing longer makes score go up
         long elapsed = (System.nanoTime() - startTime)/1000000;
-        if (elapsed > 100){
+        if (elapsed > 100)
+        {
             score++;
+            Log.d("score", "Score is: " + score);
             startTime = System.nanoTime();
         }
     }
@@ -83,7 +95,7 @@ public class Player extends GameObject {
         return playing;
     }
     public void setPlaying(boolean b){
-        playing = b;
+        this.playing = b;
     }
     public void resetScore(){
         score = 0;
@@ -111,10 +123,10 @@ public class Player extends GameObject {
         this.dx = v * (eventX - this.x)/Math.sqrt(eventX*eventX + x*x);
 
         // cap movement speed
-        if (dx > 10)
-            dx = 10;
-        if (dx < -10)
-            dx = -10;
+        if (dx > 15)
+            dx = 15;
+        if (dx < -15)
+            dx = -15;
     }
     public void setDy(double eventY)
     {
@@ -123,14 +135,22 @@ public class Player extends GameObject {
         this.dy = v * (eventY - this.y)/Math.sqrt(eventY*eventY + y*y);
 
         // cap movement speed
-        if(dy > 10)
-            dy = 10;
-        if(dy < -10)
-            dy = -10;
+        if(dy > 15)
+            dy = 15;
+        if(dy < -15)
+            dy = -15;
     }
 
     // draw centered at (x,y)
     public void draw(Canvas canvas) {
         canvas.drawBitmap(image, x - (image.getWidth() / 2), y - (image.getHeight() / 2), null);
+    }
+    public void reset_player()
+    {
+            setPlaying(false);
+            setMoving(false);
+            setX(GamePanel.WIDTH / 2);
+            setY(GamePanel.HEIGHT / 2);
+            resetScore();
     }
 }

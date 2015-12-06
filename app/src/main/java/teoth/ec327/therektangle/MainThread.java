@@ -4,13 +4,14 @@ package teoth.ec327.therektangle;
  * Created by Luke on 11/22/2015.
  */
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 public class MainThread extends Thread
 {
-    private int FPS = 30;
+    private int FPS = 60;
     private double averageFPS;
-    private SurfaceHolder surfaceHolder;
+    private final SurfaceHolder surfaceHolder;
     private GamePanel gamePanel;
     private boolean running;
     public static Canvas canvas;
@@ -43,6 +44,7 @@ public class MainThread extends Thread
                     this.gamePanel.draw(canvas);
                 }
             } catch (Exception e) {
+                Log.d("error", "Mainthread run failed");
             }
             finally{
                 if(canvas!=null)
@@ -59,7 +61,9 @@ public class MainThread extends Thread
 
             try{
                 this.sleep(waitTime);
-            }catch(Exception e){}
+            }catch(Exception e){
+                Log.d("error", "Couldn't sleep");
+            }
 
             // Calculate FPS (For debugging and testing
             totalTime += System.nanoTime()-startTime;
@@ -71,7 +75,7 @@ public class MainThread extends Thread
                 // reset for next time
                 frameCount =0;
                 totalTime = 0;
-                System.out.println(averageFPS);
+                Log.d("fps", "FPS: " + averageFPS);
             }
             frameCount++;
         }
