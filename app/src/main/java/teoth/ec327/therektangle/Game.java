@@ -7,6 +7,7 @@ https://www.youtube.com/channel/UCKkABMS8IVJlu0G4ipPyZaA
 import android.app.Activity;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -15,10 +16,10 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+
 public class Game extends Activity {
+    static MediaPlayer soundtrack;
 
-
-    //static MediaPlayer soundtrack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +33,7 @@ public class Game extends Activity {
         //setContentView(new GamePanel(this));
 
         // Play background music
-        //soundtrack = MediaPlayer.create(this, R.raw.total_eclipse_of_the_heart);
+        soundtrack = MediaPlayer.create(this, R.raw.rektangle_music);
     }
     public void onClickStartGame(View v){
         setContentView(new GamePanel(this));
@@ -61,12 +62,46 @@ public class Game extends Activity {
     }
 
     // For Music
-//    public static void playMusic(View view)
-//    {
-//        soundtrack.start();
-//    }
-//    public static void stopMusic(View view)
-//    {
-//        soundtrack.stop();
-//    }
+    public static void playMusic(View view)
+    {
+        try {
+            soundtrack.start();
+        } catch (Exception e) {
+            Log.d("sound", "Soundtrack didn't start");
+        }
+    }
+    public static void stopMusic(View view)
+    {
+        try {
+            soundtrack.stop();
+        } catch (Exception e) {
+            Log.d("sound", "Soundtrack didn't stop");
+        }
+    }
+    public static void pauseMusic(View view)
+    {
+        try {
+            soundtrack.pause();
+        } catch (Exception e) {
+            Log.d("sound", "Soundtrack didn't pause");
+        }
+    }
+    public static void resumeMusic(View view)
+    {
+        try {
+            soundtrack.start();
+        } catch (Exception e) {
+            Log.d("sound", "Soundtrack didn't resume");
+        }
+    }
+    public static void restartMusic(View view)
+    {
+        try{
+            soundtrack.pause();
+            // rewinds to the beginning of the track
+            soundtrack.seekTo(0);
+        }catch(Exception e){
+            Log.d("sound", "soundtrack didn't reset");
+        }
+    }
 }

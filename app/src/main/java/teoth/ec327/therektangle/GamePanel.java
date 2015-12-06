@@ -12,6 +12,7 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -64,7 +65,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
             try{thread.setRunning(false);
                 thread.join();
                 // please don't stop the music (but actually do)
-//                Game.stopMusic(this);
+                Game.stopMusic(this);
             }catch(InterruptedException e){e.printStackTrace();}
             retry = false;
         }
@@ -87,11 +88,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
         // initialize times
         enemiesStartTime = System.nanoTime();
 
+        Game.playMusic(this);
         // game loop start
         thread.setRunning(true);
         thread.start();
-        //Game.playMusic(this); // example sound playing
-
+        Game.playMusic(this);
+        Game.pauseMusic(this);
     }
     @Override
     public boolean onTouchEvent(MotionEvent event)
@@ -101,8 +103,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
         if (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE)
         {
             // might need to be controlled by a start button later !!!
-            if (!player.getPlaying())
+            if (!player.getPlaying()) {
                 player.setPlaying(true);
+                Game.resumeMusic(this);
+            }
             if (!player.getMoving())
                 player.setMoving(true);
 
@@ -125,7 +129,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
         if(!player.getPlaying())
         {
             player.reset_player();
-            //enemies.clear();
+            enemies.clear();
+            Game.restartMusic(this);
         }
         // game in play
         if (player.getPlaying())
