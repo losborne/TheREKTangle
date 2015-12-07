@@ -1,9 +1,9 @@
 package teoth.ec327.therektangle;
-/*
-Game replaced MainActivity for this app
-Resources used:
-https://www.youtube.com/channel/UCKkABMS8IVJlu0G4ipPyZaA
+
+/**
+ * Created by Luke on 12/6/2015.
  */
+
 import android.app.Activity;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -14,8 +14,13 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+/*
+MenuScreen replaced MainActivity for this app
+Resources used:
+ */
 
-public class Game extends Activity {
+
+public class MenuScreen extends Activity {
     static MediaPlayer soundtrack;
 
     @Override
@@ -27,22 +32,23 @@ public class Game extends Activity {
 
         // full screen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        // first screen
         setContentView(R.layout.menu_game);
 
         // Play background music
         soundtrack = MediaPlayer.create(this, R.raw.menu_screen);
         soundtrack.start();
     }
-    public void onClickStartGame(View v){
-        soundtrack.pause();
+
+    public void onClickStartGame(View v) {
         soundtrack.stop();
-        setContentView(new GamePanel(this));
+        // setContentView(new GamePanel(this));
         soundtrack = MediaPlayer.create(this, R.raw.rektangle_music);
     }
 
-    public void onClickInstructions(View v){
+    public void onClickInstructions(View v) {
         setContentView(R.layout.instructions_game);
+        soundtrack = MediaPlayer.create(this, R.raw.menu_screen);
+        soundtrack.start();
     }
 
 
@@ -63,54 +69,9 @@ public class Game extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            soundtrack.stop();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    // For Music
-    public static void playMusic(View view)
-    {
-        try {
-            soundtrack.start();
-        } catch (Exception e) {
-            Log.d("sound", "Soundtrack didn't start");
-        }
-    }
-    public static void stopMusic(View view)
-    {
-        try {
-            soundtrack.stop();
-        } catch (Exception e) {
-            Log.d("sound", "Soundtrack didn't stop");
-        }
-    }
-    public static void pauseMusic(View view)
-    {
-        try {
-            soundtrack.pause();
-        } catch (Exception e) {
-            Log.d("sound", "Soundtrack didn't pause");
-        }
-    }
-    public static void resumeMusic(View view)
-    {
-        try {
-            soundtrack.start();
-        } catch (Exception e) {
-            Log.d("sound", "Soundtrack didn't resume");
-        }
-    }
-    public static void restartMusic(View view)
-    {
-        try{
-            soundtrack.pause();
-            // rewinds to the beginning of the track
-            soundtrack.seekTo(0);
-        }catch(Exception e){
-            Log.d("sound", "soundtrack didn't reset");
-        }
     }
 }

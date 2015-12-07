@@ -64,7 +64,7 @@ public class Player extends GameObject {
         }
 
         animation.setFrames(image);
-        animation.setDelay(50);
+        animation.setDelay(100);
 
         // Initial position is in the middle of the screen
         x = GamePanel.WIDTH / 2;
