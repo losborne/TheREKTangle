@@ -32,6 +32,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
     private MainThread thread;
     private Background bg;
     private Player player;
+    private Arrow arrow;
     private ArrayList<Enemy> enemies;
     private long enemiesStartTime;
     private long waveStartTime;
@@ -82,7 +83,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
         // not animated
         // player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.player_default), 0, 0, 50, 50);
 
-        // not animated
+        arrow = new Arrow(BitmapFactory.decodeResource(getResources(), R.drawable.direction_arrow), 0, 0, 30, 30, player);
+
         enemies = new ArrayList<>();
 
         // initialize times
@@ -94,6 +96,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
         thread.start();
         Game.playMusic(this);
         Game.pauseMusic(this);
+        Game.playDeathSound(this);
+        Game.restartDeathSound(this);
     }
     @Override
     public boolean onTouchEvent(MotionEvent event)
@@ -113,6 +117,11 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
             // update the motion vectors
             player.setDestX(scaledX);
             player.setDestY(scaledY);
+
+            // update arrow postion
+            arrow.setX((int) scaledX);
+            arrow.setY((int) scaledY);
+
             return true;
         }
 
@@ -128,16 +137,18 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
         // reset game state
         if(!player.getPlaying())
         {
-            player.reset_player();
-            enemies.clear();
-            Game.restartMusic(this);
+           // go to game over screen
+           // !!!
+
         }
         // game in play
         if (player.getPlaying())
         {
             // update game elements
+            Game.restartDeathSound(this);
             bg.update();
             player.update();
+            arrow.update();
 
             // add enemies on a timer
             long enemiesSpawnTime = (System.nanoTime() - enemiesStartTime) / 1000000; // ms is unit
@@ -165,6 +176,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
              //detect collisions
             if(detect_collision(e,player))
             {
+                Game.restartMusic(this);
+                Game.playDeathSound(this);
                 enemies.clear();
                 player.reset_player();
                 break;
@@ -189,6 +202,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
             canvas.scale(scaleFactorX, scaleFactorY);
             bg.draw(canvas);
             player.draw(canvas);
+            // only draw the arrow if the player is moving
+            if(player.getMoving())
+                arrow.draw(canvas);
 
             for(Enemy e: enemies)
             {

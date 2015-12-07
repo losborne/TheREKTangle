@@ -17,6 +17,7 @@ import android.view.WindowManager;
 
 public class Game extends Activity {
     static MediaPlayer soundtrack;
+    static MediaPlayer gameover;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,7 @@ public class Game extends Activity {
 
         // Play background music
         soundtrack = MediaPlayer.create(this, R.raw.menu_screen);
+        gameover = MediaPlayer.create(this, R.raw.deathsound);
         soundtrack.start();
     }
     public void onClickStartGame(View v){
@@ -122,6 +124,24 @@ public class Game extends Activity {
             soundtrack.pause();
             // rewinds to the beginning of the track
             soundtrack.seekTo(0);
+        }catch(Exception e){
+            Log.d("sound", "soundtrack didn't reset");
+        }
+    }
+    public static void playDeathSound(View view)
+    {
+        try {
+            gameover.start();
+        } catch (Exception e) {
+            Log.d("sound", "Soundtrack didn't start");
+        }
+    }
+    public static void restartDeathSound(View view)
+    {
+        try{
+            gameover.pause();
+            // rewinds to the beginning of the track
+            gameover.seekTo(0);
         }catch(Exception e){
             Log.d("sound", "soundtrack didn't reset");
         }
