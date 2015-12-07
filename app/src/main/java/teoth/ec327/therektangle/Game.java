@@ -30,6 +30,7 @@ public class Game extends Activity {
         // first screen
         setContentView(R.layout.menu_game);
 
+
         // Play background music
         soundtrack = MediaPlayer.create(this, R.raw.menu_screen);
         soundtrack.start();
@@ -37,6 +38,7 @@ public class Game extends Activity {
     public void onClickStartGame(View v){
         soundtrack.pause();
         soundtrack.stop();
+        soundtrack.release();
         setContentView(new GamePanel(this));
         soundtrack = MediaPlayer.create(this, R.raw.rektangle_music);
     }
@@ -64,12 +66,23 @@ public class Game extends Activity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             soundtrack.stop();
+            soundtrack.release();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onStop(){
+        soundtrack.stop();
+        super.onStop();
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        soundtrack.start();
+    }
     // For Music
     public static void playMusic(View view)
     {
