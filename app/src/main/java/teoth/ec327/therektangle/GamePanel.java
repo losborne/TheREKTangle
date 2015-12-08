@@ -108,7 +108,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     {
         double scaledX = (double) (event.getX()/this.getWidth() * WIDTH);
         double scaledY = (double) (event.getY()/this.getHeight() * HEIGHT);
-        if (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE)
+        if (event.getAction() == MotionEvent.ACTION_DOWN)
         {
             if(game_over)
             {
@@ -131,7 +131,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
             return true;
         }
+        if(event.getAction() == MotionEvent.ACTION_MOVE)
+        {
+            player.setDestX(scaledX);
+            player.setDestY(scaledY);
 
+            if (!player.getMoving())
+                player.setMoving(true);
+        }
         if(event.getAction() == MotionEvent.ACTION_UP){
             // no longer moving, still playing
             player.setMoving(false);
