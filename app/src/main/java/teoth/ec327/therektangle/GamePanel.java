@@ -12,6 +12,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -33,6 +35,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     private Background bg;
     private Background game_over_bg;
     private Player player;
+    private Paint scorePaint = new Paint();
     //private Arrow arrow;
     private ArrayList<Enemy> enemies;
     private long enemiesStartTime;
@@ -41,6 +44,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     private char side; // what side the waves come from
     private int enemyV; // enemy velocity
     private boolean game_over = false;
+    private int MAX_ENEMIES;
 
     public GamePanel(Context context)
     {
@@ -88,6 +92,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
         // arrow rotation not working !!!
 //        arrow = new Arrow(BitmapFactory.decodeResource(getResources(), R.drawable.direction_arrow), 0, 0, 30, 30, player);
+
+        // Most enemies allowed to be on screen at once
+        MAX_ENEMIES = 200;
+
+        // score font setup
+        scorePaint.setColor(Color.GREEN);
+        scorePaint.setStyle(Paint.Style.FILL);
+        scorePaint.setTextSize(20);
 
         enemies = new ArrayList<>();
 
@@ -166,7 +178,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
             // wave timer (ms)
             long waveElapsedTime = (System.nanoTime() - waveStartTime) / 1000000;
-            if (enemiesSpawnTime > (1000 - player.getScore() / 4))
+
+            // spawn an enemy
+            if (enemiesSpawnTime > (1000 - player.getScore()) / 3)
             {
                 choose_spawn();
                 enemiesStartTime = System.nanoTime();
@@ -197,11 +211,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             }
 
             // remove off screen enemies
-            if (e.getX() <= -100 || e.getY() < -100
-                    || e.getX() > (WIDTH+100) || e.getY() > (HEIGHT+100)) {
-                Log.d("sd", "DESTROYED AN ENEMY!  YAY IT WORKS");
-                enemies.remove(e);
-            }
+            // made frames skip too much
+//            if (e.getX() <= -100 || e.getY() < -100
+//                    || e.getX() > (WIDTH+100) || e.getY() > (HEIGHT+100)) {
+//                Log.d("sd", "DESTROYED AN ENEMY!  YAY IT WORKS");
+//                enemies.remove(e);
+//            }
         }
     }
     @Override
@@ -220,8 +235,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             }
             else
             {
+                canvas.drawPaint(scorePaint);
                 bg.draw(canvas);
                 player.draw(canvas);
+                // draw score
+
+                canvas.drawText("SCORE: " + Integer.toString(player.getScore()), WIDTH - 120, 30, scorePaint);
                 // only draw the arrow if the player is moving
     //            if(player.getMoving())
     //                arrow.draw(canvas);
@@ -246,8 +265,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         int randY = -20;
 
         // set semi-random  velocity
-        enemyV = 8 + (int) (rand.nextDouble() * player.getScore() / 29);
-        if(enemies.size() <= 50) {
+        enemyV = 2 + (int) (rand.nextDouble() * player.getScore() / 29);
+        if(enemies.size() <= MAX_ENEMIES) {
             enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(),
                     R.drawable.enemy_vertical_animated), 10, 25, side, player.getScore(), randX, randY, enemyV, 4));
         }
@@ -261,8 +280,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         // set semi-random  velocity
         // make top/bottom go slower than sides because there's less room
         // !!!
-        enemyV = (-1)*(8 + (int) (rand.nextDouble() * player.getScore() / 29));
-        if(enemies.size() <= 50) {
+        enemyV = (-1)*(2 + (int) (rand.nextDouble() * player.getScore() / 29));
+        if(enemies.size() <= MAX_ENEMIES) {
             enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(),
                     R.drawable.enemy_vertical_animated), 10, 25, side, player.getScore(), randX, randY, enemyV, 4));
         }
@@ -275,7 +294,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
         // set semi-random  velocity
         enemyV = 8 + (int) (rand.nextDouble() * player.getScore() / 29);
-        if(enemies.size() <= 50) {
+        if(enemies.size() <= MAX_ENEMIES) {
             enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(),
                     R.drawable.enemy_horizontal_animated), 25, 10, side,
                     player.getScore(), randX, randY, enemyV, 4));
@@ -291,7 +310,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         // set semi-random  velocity
         enemyV = (-1)*(8 + (int) (rand.nextDouble() * player.getScore() / 29));
 
-        if(enemies.size() <= 50) {
+        if(enemies.size() <= MAX_ENEMIES) {
             enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(),
                     R.drawable.enemy_horizontal_animated), 25, 10, side,
                     player.getScore(), randX, randY, enemyV, 4));
