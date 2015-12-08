@@ -32,6 +32,7 @@ public class Game extends Activity {
         setContentView(R.layout.menu_game);
 
 
+
         // Play background music
         soundtrack = MediaPlayer.create(this, R.raw.menu_screen);
         gameover = MediaPlayer.create(this, R.raw.deathsound);
