@@ -196,6 +196,5 @@ public class Player extends GameObject {
             setMoving(false);
             setX(GamePanel.WIDTH / 2);
             setY(GamePanel.HEIGHT / 2);
-            resetScore();
     }
 }

@@ -125,6 +125,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             if(game_over)
             {
                 game_over = false;
+                player.resetScore();
+
             }
             if (!player.getPlaying()) {
                 player.setPlaying(true);
@@ -231,7 +233,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             canvas.scale(scaleFactorX, scaleFactorY);
             if(game_over)
             {
+                canvas.drawPaint(scorePaint);
                 game_over_bg.draw(canvas);
+                canvas.drawText("FINAL SCORE: " + Integer.toString(player.getScore()), WIDTH/2, HEIGHT-80, scorePaint);
+
             }
             else
             {
