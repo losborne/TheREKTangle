@@ -84,8 +84,8 @@ public class Game extends Activity {
 
     @Override
     public void onStart(){
-        super.onStart();
         soundtrack.start();
+        super.onStart();
     }
     // For Music
     public static void playMusic(View view)
