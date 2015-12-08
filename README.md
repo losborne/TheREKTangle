@@ -11,10 +11,10 @@
 - [X] Detect if Player hits Bad Guys
 - [X] Reset Game if Player Hits Bad Guys
 - [X] Randomly Generate Bad Guys
-- [ ] End Level after Certain Time and Reset Game
+- [X] End Level after Certain Time and Reset Game
 - [ ] Implement More Levels.
-- [ ] Keep Track of Score
-- [ ] Display Score at end of Game
+- [X] Keep Track of Score
+- [X] Display Score at end of Game
 - [X] Make Main menu with buttons <br>
 
 <p><b>Icing on the cake:</b></p>
@@ -22,9 +22,13 @@
 - [X] Add music
 - [X] Add animations (explosion for collision?)
 - [ ] Add boss after x levels.
+- [ ] Display Score at end of Game
+- [ ] More Detailed instructions about player movement
+- [ ] Tip screen if score is too low after you die
+- [ ] Star Enemy that puts you in Star Mode (a la Mario)
 
 <p>Non-Programming Related Stuff that also needs to get done:</p>
-- [ ] (Project Lead)<br>
+ (Project Lead)<br>
 - [ ] <b>ProjectTimeline.doc</b>   Submitted documentation for timelines, objectives, and meetings<br>
 - [ ] <b>ProjectArchitecture.ppt</b>   Overall software architecture description and images <br>
 - [ ] (Documentation Manager)<br>
@@ -33,6 +37,6 @@
 - [ ] <b>StatementOfWork.doc</b>
                               Getting all team members to agree to a statement of work at the end of the project, describing what
                               each member contributed<br>
-- [ ] <b>Video on course Youtube Page</b>
+- [X] <b>Video on course Youtube Page</b>
                             Putting together a short video presentation of the project, including motivation for why the project
                             is useful, who will use it, how they will use, and why they will use it
