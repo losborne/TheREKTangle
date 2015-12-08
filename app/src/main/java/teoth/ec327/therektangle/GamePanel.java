@@ -45,6 +45,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     private int enemyV; // enemy velocity
     private boolean game_over = false;
     private int MAX_ENEMIES;
+    private int LEVEL_SCORE = 100;
+    private int level = 1;
 
     public GamePanel(Context context)
     {
@@ -94,7 +96,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 //        arrow = new Arrow(BitmapFactory.decodeResource(getResources(), R.drawable.direction_arrow), 0, 0, 30, 30, player);
 
         // Most enemies allowed to be on screen at once
-        MAX_ENEMIES = 200;
+        MAX_ENEMIES = 500;
 
         // score font setup
         scorePaint.setColor(Color.GREEN);
@@ -150,8 +152,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             player.setDestX(scaledX);
             player.setDestY(scaledY);
 
-            if (!player.getMoving())
-                player.setMoving(true);
+//            if (!player.getMoving())
+//                player.setMoving(true);
         }
         if(event.getAction() == MotionEvent.ACTION_UP){
             // no longer moving, still playing
@@ -169,6 +171,17 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         // game in play
         if (player.getPlaying())
         {
+            int wLength = 7;
+            if(player.getScore() == (level*LEVEL_SCORE) )
+            {
+                // go to next level
+                enemies.clear();
+                player.reset_player();
+                Game.pauseMusic(this);
+                wLength = 10 - level;
+                level++;
+                return;
+            }
             // update game elements
             Game.restartDeathSound(this);
             bg.update();
@@ -179,16 +192,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             long enemiesSpawnTime = (System.nanoTime() - enemiesStartTime) / 1000000; // ms is unit
 
             // wave timer (ms)
-            long waveElapsedTime = (System.nanoTime() - waveStartTime) / 1000000;
-
+            long waveElapsedTime = (System.nanoTime() - waveStartTime) / 1000000; // ms
             // spawn an enemy
-            if (enemiesSpawnTime > (1000 - player.getScore()) / 3)
+            if (enemiesSpawnTime > ((1000 - player.getScore()) / (level)) )//(level/10))
             {
                 choose_spawn();
                 enemiesStartTime = System.nanoTime();
             }
             // move to next side for next wave
-            int wLength = 5;
             if(waveElapsedTime > (wLength * 1000)) // new wave every 10 seconds
             {
                 choose_side();
@@ -284,7 +295,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
         // set semi-random  velocity
         // make top/bottom go slower than sides because there's less room
-        // !!!
         enemyV = (-1)*(2 + (int) (rand.nextDouble() * player.getScore() / 29));
         if(enemies.size() <= MAX_ENEMIES) {
             enemies.add(new Enemy(BitmapFactory.decodeResource(getResources(),
