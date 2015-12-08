@@ -9,10 +9,10 @@ package teoth.ec327.therektangle;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -22,23 +22,25 @@ import java.util.ArrayList;
 import java.util.Random;
 
 
-public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!!, View.OnTouchListener
+public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 {
-    // will change depending on phone size
+    // will scale automatically depending on phone size
     public static final int WIDTH = 856;
     public static final int HEIGHT = 480;
 
     // declare game elements
     private MainThread thread;
     private Background bg;
+    private Background game_over_bg;
     private Player player;
-    private Arrow arrow;
+    //private Arrow arrow;
     private ArrayList<Enemy> enemies;
     private long enemiesStartTime;
     private long waveStartTime;
     private Random rand = new Random();
     private char side; // what side the waves come from
     private int enemyV; // enemy velocity
+    private boolean game_over = false;
 
     public GamePanel(Context context)
     {
@@ -78,12 +80,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
 
         // instantiate all objects for game
         bg = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background));
+        game_over_bg = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.gameover));
         //animated
         player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.player_animated), 0, 0, 50, 50,5);
         // not animated
         // player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.player_default), 0, 0, 50, 50);
 
-        arrow = new Arrow(BitmapFactory.decodeResource(getResources(), R.drawable.direction_arrow), 0, 0, 30, 30, player);
+        // arrow rotation not working !!!
+//        arrow = new Arrow(BitmapFactory.decodeResource(getResources(), R.drawable.direction_arrow), 0, 0, 30, 30, player);
 
         enemies = new ArrayList<>();
 
@@ -106,7 +110,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
         double scaledY = (double) (event.getY()/this.getHeight() * HEIGHT);
         if (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE)
         {
-            // might need to be controlled by a start button later !!!
+            if(game_over)
+            {
+                game_over = false;
+            }
             if (!player.getPlaying()) {
                 player.setPlaying(true);
                 Game.resumeMusic(this);
@@ -119,8 +126,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
             player.setDestY(scaledY);
 
             // update arrow postion
-            arrow.setX((int) scaledX);
-            arrow.setY((int) scaledY);
+//            arrow.setX((int) scaledX);
+//            arrow.setY((int) scaledY);
 
             return true;
         }
@@ -137,9 +144,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
         // reset game state
         if(!player.getPlaying())
         {
-           // go to game over screen
-           // !!!
-
         }
         // game in play
         if (player.getPlaying())
@@ -148,7 +152,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
             Game.restartDeathSound(this);
             bg.update();
             player.update();
-            arrow.update();
+//            arrow.update();
 
             // add enemies on a timer
             long enemiesSpawnTime = (System.nanoTime() - enemiesStartTime) / 1000000; // ms is unit
@@ -176,10 +180,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
              //detect collisions
             if(detect_collision(e,player))
             {
+                // game over logic
                 Game.restartMusic(this);
                 Game.playDeathSound(this);
                 enemies.clear();
                 player.reset_player();
+                game_over = true;
                 break;
             }
 
@@ -194,31 +200,36 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback//!!
     @Override
     public void draw(Canvas canvas)
     {
+
         if(canvas!=null) {
-            final float scaleFactorX = getWidth()/(WIDTH*1.f);
-            final float scaleFactorY = getHeight()/(HEIGHT*1.f);
+            final float scaleFactorX = getWidth() / (WIDTH * 1.f);
+            final float scaleFactorY = getHeight() / (HEIGHT * 1.f);
 
             final int savedState = canvas.save();
             canvas.scale(scaleFactorX, scaleFactorY);
-            bg.draw(canvas);
-            player.draw(canvas);
-            // only draw the arrow if the player is moving
-            if(player.getMoving())
-                arrow.draw(canvas);
-
-            for(Enemy e: enemies)
+            if(game_over)
             {
-                // only draw if on canvas
-                try {
-                    e.draw(canvas);
-                }
-                catch(Exception e1){
-                    Log.d("error", "Didn't draw an enemy");
+                game_over_bg.draw(canvas);
+            }
+            else
+            {
+                bg.draw(canvas);
+                player.draw(canvas);
+                // only draw the arrow if the player is moving
+    //            if(player.getMoving())
+    //                arrow.draw(canvas);
+
+                for (Enemy e : enemies) {
+                    // only draw if on canvas
+                    try {
+                        e.draw(canvas);
+                    } catch (Exception e1) {
+                        Log.d("error", "Didn't draw an enemy");
+                    }
                 }
             }
             // done drawing
             canvas.restoreToCount(savedState);
-
         }
     }
     public void spawn_top()

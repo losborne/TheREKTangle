@@ -77,6 +77,7 @@ public class Game extends Activity {
     @Override
     public void onStop(){
         soundtrack.stop();
+        gameover.stop();
         super.onStop();
     }
 
