@@ -15,7 +15,7 @@
 - [ ] Implement More Levels.
 - [ ] Keep Track of Score
 - [ ] Display Score at end of Game
-- [ ] Make Main menu with buttons <br>
+- [X] Make Main menu with buttons <br>
 
 <p><b>Icing on the cake:</b></p>
 - [X] Make everything look pretty
