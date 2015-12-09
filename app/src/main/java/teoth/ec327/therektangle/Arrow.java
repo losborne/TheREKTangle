@@ -31,37 +31,41 @@ public class Arrow extends GameObject {
         matrix = new Matrix();
 
         // rotate the player based on the
-        this.angle = (float) Math.atan(((y - player.getY())/(x - player.getX())));
+        try {
+            this.angle = (float) Math.atan(((player.getY()) / player.getX()));
+//            matrix.postRotate(angle);
+//            rotated_image = Bitmap.createBitmap(image, (x - image.getWidth()) / 2, (y - image.getHeight()) / 2, image.getWidth(),
+//                    image.getHeight(), matrix, true);
+
+            matrix.setRotate(angle, (x - image.getWidth()) / 2, (y - image.getHeight()) / 2);
+
+        } catch (Exception e)
+        {
+            Log.d("update", "Arrow rotate error");
+        }
     }
 
     public void update()
     {
-        this.angle = (float) Math.atan(((player.getY())/player.getX()));
+        try {
+            this.angle = (float) Math.atan(((player.getY()) / player.getX()));
+            matrix.postRotate(angle);
+            rotated_image = Bitmap.createBitmap(image, (x - image.getWidth()) / 2, (y - image.getHeight()) / 2, image.getWidth(),
+                    image.getHeight(), matrix, true);
+        } catch (Exception e)
+        {
+            Log.d("update", "Arrow update error");
+        }
     }
 
     public void draw(Canvas canvas)
     {
-        matrix.postRotate(angle);
-        rotated_image = Bitmap.createBitmap(image, (x - image.getWidth())/2, (y - image.getHeight())/2, image.getWidth(),
-                image.getHeight(), matrix, true);
-       // canvas.drawBitmap(image, matrix, null);
-//        try {
-            // rotated
-            // canvas.drawBitmap(rotated_image, x, y, null);
-            canvas.drawBitmap(rotated_image, x - (image.getWidth() / 2), y - (image.getHeight() / 2), null);
-//        }
-//        catch (Exception e)
-//        {
-//            Log.d("draw", "Couldn't draw arrow");
-//        }
-    }
-
-    public boolean get_drawing()
-    {
-        return drawing;
-    }
-    public void set_drawing(boolean b)
-    {
-        drawing = b;
+        try {
+            canvas.drawBitmap(image, x - (image.getWidth() / 2), y - (image.getHeight() / 2), null);
+        }
+        catch (Exception e)
+        {
+            Log.d("draw", "Arrow draw error");
+        }
     }
 }

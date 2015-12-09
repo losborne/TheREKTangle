@@ -36,7 +36,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     private Background game_over_bg;
     private Player player;
     private Paint scorePaint = new Paint();
-    //private Arrow arrow;
+    private Arrow arrow;
     private ArrayList<Enemy> enemies;
     private long enemiesStartTime;
     private long waveStartTime;
@@ -44,6 +44,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     private char side; // what side the waves come from
     private int enemyV; // enemy velocity
     private boolean game_over = false;
+    private boolean level_screen = true;
     private int MAX_ENEMIES;
     private int LEVEL_SCORE = 100;
     private int level = 1;
@@ -128,7 +129,10 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             {
                 game_over = false;
                 player.resetScore();
-
+            }
+            if(level_screen)
+            {
+                level_screen = false;
             }
             if (!player.getPlaying()) {
                 player.setPlaying(true);
@@ -142,8 +146,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             player.setDestY(scaledY);
 
             // update arrow postion
-//            arrow.setX((int) scaledX);
-//            arrow.setY((int) scaledY);
+            // halfway between player and finger
+//            arrow.setX(player.getX() + ((int) scaledX - player.getX()) / 2);
+//            arrow.setY(player.getY() + ((int) scaledY - player.getY())/2);
 
             return true;
         }
@@ -152,8 +157,12 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             player.setDestX(scaledX);
             player.setDestY(scaledY);
 
-//            if (!player.getMoving())
-//                player.setMoving(true);
+            // update arrow postion
+//            arrow.setX(player.getX() + ((int) scaledX - player.getX())/2);
+//            arrow.setY(player.getY() + ((int) scaledY - player.getY())/2);
+
+            if (!player.getMoving())
+                player.setMoving(true);
         }
         if(event.getAction() == MotionEvent.ACTION_UP){
             // no longer moving, still playing
@@ -175,6 +184,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             if(player.getScore() == (level*LEVEL_SCORE) )
             {
                 // go to next level
+                level_screen = true;
                 enemies.clear();
                 player.reset_player();
                 Game.pauseMusic(this);
@@ -186,7 +196,9 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             Game.restartDeathSound(this);
             bg.update();
             player.update();
-//            arrow.update();
+//            if(player.getMoving()) {
+//                arrow.update();
+//            }
 
             // add enemies on a timer
             long enemiesSpawnTime = (System.nanoTime() - enemiesStartTime) / 1000000; // ms is unit
@@ -235,7 +247,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     @Override
     public void draw(Canvas canvas)
     {
-
         if(canvas!=null) {
             final float scaleFactorX = getWidth() / (WIDTH * 1.f);
             final float scaleFactorY = getHeight() / (HEIGHT * 1.f);
@@ -254,12 +265,19 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
                 canvas.drawPaint(scorePaint);
                 bg.draw(canvas);
                 player.draw(canvas);
+                // Add level screen here later, text for now
                 // draw score
-
+                if(level_screen)
+                {
+                    canvas.drawText("LEVEL " + Integer.toString(level), WIDTH/2, HEIGHT/2 -150, scorePaint);
+                    canvas.drawText("Touch to play.", WIDTH/2, HEIGHT/2 - 130, scorePaint);
+                }
                 canvas.drawText("SCORE: " + Integer.toString(player.getScore()), WIDTH - 120, 30, scorePaint);
                 // only draw the arrow if the player is moving
-    //            if(player.getMoving())
-    //                arrow.draw(canvas);
+//                if(player.getMoving() && !detect_collision(arrow,player))// dont draw if they overlap
+//                {
+//                    arrow.draw(canvas);
+//                }
 
                 for (Enemy e : enemies) {
                     // only draw if on canvas
