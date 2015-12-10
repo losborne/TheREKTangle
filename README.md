@@ -22,7 +22,7 @@
 - [X] Add music
 - [X] Add animations (explosion for collision?)
 - [ ] Add boss after x levels.
-- [ ] Display Score at end of Game
+- [X] Display Score at end of Game
 - [ ] More Detailed instructions about player movement
 - [ ] Tip screen if score is too low after you die
 - [ ] Star Enemy that puts you in Star Mode (a la Mario)
@@ -32,7 +32,7 @@
 - [ ] <b>ProjectTimeline.doc</b>   Submitted documentation for timelines, objectives, and meetings<br>
 - [ ] <b>ProjectArchitecture.ppt</b>   Overall software architecture description and images <br>
 - [ ] (Documentation Manager)<br>
-- [ ] <b>ProjectDocumentation.doc</b>    Putting together (and writing, if necessary) all documentation for the project, both front-end and
+- [X] <b>ProjectDocumentation.doc</b>    Putting together (and writing, if necessary) all documentation for the project, both front-end and
                               back-end, in an organized, concise, and appealing fashion<br>
 - [ ] <b>StatementOfWork.doc</b>
                               Getting all team members to agree to a statement of work at the end of the project, describing what
