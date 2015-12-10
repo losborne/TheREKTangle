@@ -9,7 +9,7 @@ package teoth.ec327.therektangle;
  */
 
 import android.content.Context;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -29,11 +29,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     // will scale automatically depending on phone size
     public static final int WIDTH = 856;
     public static final int HEIGHT = 480;
+    public static final int MAX_ENEMIES = 500;
+    public static final int LEVEL_SCORE = 100;
+
 
     // declare game elements
     private MainThread thread;
     private Background bg;
-    private Background game_over_bg;
+    private Background gameOverBg;
     private Player player;
     private Paint scorePaint = new Paint();
     private Arrow arrow;
@@ -43,10 +46,8 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
     private Random rand = new Random();
     private char side; // what side the waves come from
     private int enemyV; // enemy velocity
-    private boolean game_over = false;
-    private boolean level_screen = true;
-    private int MAX_ENEMIES;
-    private int LEVEL_SCORE = 100;
+    private boolean gameOver = false;
+    private boolean levelScreen = true;
     private int level = 1;
 
     public GamePanel(Context context)
@@ -87,7 +88,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
         // instantiate all objects for game
         bg = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.background));
-        game_over_bg = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.gameover));
+        gameOverBg = new Background(BitmapFactory.decodeResource(getResources(), R.drawable.gameover));
         //animated
         player = new Player(BitmapFactory.decodeResource(getResources(), R.drawable.player_animated), 0, 0, 50, 50,5);
         // not animated
@@ -95,9 +96,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
         // arrow rotation not working !!!
 //        arrow = new Arrow(BitmapFactory.decodeResource(getResources(), R.drawable.direction_arrow), 0, 0, 30, 30, player);
-
-        // Most enemies allowed to be on screen at once
-        MAX_ENEMIES = 500;
 
         // score font setup
         scorePaint.setColor(Color.GREEN);
@@ -125,14 +123,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
         double scaledY = (double) (event.getY()/this.getHeight() * HEIGHT);
         if (event.getAction() == MotionEvent.ACTION_DOWN)
         {
-            if(game_over)
+            if(gameOver)
             {
-                game_over = false;
+                gameOver = false;
+                levelScreen = true;
                 player.resetScore();
             }
-            if(level_screen)
+            if(levelScreen)
             {
-                level_screen = false;
+                Game.playMusic(this);
+                levelScreen = false;
             }
             if (!player.getPlaying()) {
                 player.setPlaying(true);
@@ -184,7 +184,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             if(player.getScore() == (level*LEVEL_SCORE) )
             {
                 // go to next level
-                level_screen = true;
+                levelScreen = true;
                 enemies.clear();
                 player.reset_player();
                 Game.pauseMusic(this);
@@ -227,11 +227,16 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
             if(detect_collision(e,player))
             {
                 // game over logic
+                // check for high score
+                if(player.getScore() >= ((Game)getContext()).getScore())
+                {
+                    ((Game)getContext()).high_score = player.getScore();
+                }
                 Game.restartMusic(this);
                 Game.playDeathSound(this);
                 enemies.clear();
                 player.reset_player();
-                game_over = true;
+                gameOver = true;
                 break;
             }
 
@@ -253,11 +258,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
 
             final int savedState = canvas.save();
             canvas.scale(scaleFactorX, scaleFactorY);
-            if(game_over)
+            if(gameOver)
             {
                 canvas.drawPaint(scorePaint);
-                game_over_bg.draw(canvas);
-                canvas.drawText("FINAL SCORE: " + Integer.toString(player.getScore()), WIDTH/2, HEIGHT-80, scorePaint);
+                gameOverBg.draw(canvas);
+                // display score
+                canvas.drawText("FINAL SCORE: " + Integer.toString(player.getScore()), WIDTH / 2, HEIGHT - 80, scorePaint);
+                // display high score
+                canvas.drawText("HIGH SCORE: " + Integer.toString(((Game) getContext()).getScore()), WIDTH/2, HEIGHT-60, scorePaint);
 
             }
             else
@@ -267,7 +275,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
                 player.draw(canvas);
                 // Add level screen here later, text for now
                 // draw score
-                if(level_screen)
+                if(levelScreen)
                 {
                     canvas.drawText("LEVEL " + Integer.toString(level), WIDTH/2, HEIGHT/2 -150, scorePaint);
                     canvas.drawText("Touch to play.", WIDTH/2, HEIGHT/2 - 130, scorePaint);

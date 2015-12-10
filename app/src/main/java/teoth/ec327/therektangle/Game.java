@@ -5,6 +5,8 @@ Resources used:
 https://www.youtube.com/channel/UCKkABMS8IVJlu0G4ipPyZaA
  */
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,10 +16,10 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-
 public class Game extends Activity {
-    static MediaPlayer soundtrack;
-    static MediaPlayer gameover;
+    static private MediaPlayer soundtrack;
+    static private MediaPlayer gameover;
+    public int high_score = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,10 @@ public class Game extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         // first screen
         setContentView(R.layout.menu_game);
+
+        // Restore High Score
+        SharedPreferences prefs = getSharedPreferences("preferences", Context.MODE_PRIVATE);
+        high_score = prefs.getInt("score", 0);
 
 
 
@@ -77,6 +83,13 @@ public class Game extends Activity {
 
     @Override
     public void onStop(){
+        // save high score
+
+        SharedPreferences prefs = getSharedPreferences("prefs", 0);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt("score", high_score);
+        editor.commit();
+
         soundtrack.stop();
         gameover.stop();
         super.onStop();
@@ -147,5 +160,13 @@ public class Game extends Activity {
         }catch(Exception e){
             Log.d("sound", "soundtrack didn't reset");
         }
+    }
+    public int getScore()
+    {
+        return high_score;
+    }
+    public void setScore(int score)
+    {
+        this.high_score = score;
     }
 }

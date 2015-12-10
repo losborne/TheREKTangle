@@ -13,7 +13,7 @@ import java.util.Vector;
  * Inspired by the motion of http://agar.io, but no source code from agar.io was looked at
  * Created by icgn1 on 11/28/2015.
  */
-public class Player extends GameObject {
+    public class Player extends GameObject {
     private Bitmap sprites;
     private Animation animation = new Animation();
     private int score;
