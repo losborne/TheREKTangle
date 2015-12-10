@@ -232,6 +232,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback
                 {
                     ((Game)getContext()).high_score = player.getScore();
                 }
+                level = 1;
                 Game.restartMusic(this);
                 Game.playDeathSound(this);
                 enemies.clear();
