@@ -1,4 +1,7 @@
 # TheREKTangle
+Welcome to our EC327 Final Project repository.
+Above you will find the source code for our project under "TheREKTangle", the Documentation for the project in "ProjectDocumentation", and the release .apk for our app named "TheREKTangle_1.0.apk".
+
 
 <h1> Project Goals and Completed Goals</h1>
 <p><b>Core Functionality:</b></p>
