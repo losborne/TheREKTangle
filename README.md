@@ -1,6 +1,6 @@
 # TheREKTangle
 
-<h1>LIST OF THINGS TO DO</h1>
+<h1> Project Goals and Completed Goals</h1>
 <p><b>Core Functionality:</b></p>
 - [X] Draw Background
 - [X] Draw Player
@@ -12,7 +12,7 @@
 - [X] Reset Game if Player Hits Bad Guys
 - [X] Randomly Generate Bad Guys
 - [X] End Level after Certain Time and Reset Game
-- [ ] Implement More Levels.
+- [X] Implement More Levels.
 - [X] Keep Track of Score
 - [X] Display Score at end of Game
 - [X] Make Main menu with buttons <br>
@@ -24,17 +24,16 @@
 - [ ] Add boss after x levels.
 - [X] Display Score at end of Game
 - [ ] More Detailed instructions about player movement
-- [ ] Tip screen if score is too low after you die
 - [ ] Star Enemy that puts you in Star Mode (a la Mario)
 
 <p>Non-Programming Related Stuff that also needs to get done:</p>
  (Project Lead)<br>
-- [ ] <b>ProjectTimeline.doc</b>   Submitted documentation for timelines, objectives, and meetings<br>
-- [ ] <b>ProjectArchitecture.ppt</b>   Overall software architecture description and images <br>
-- [ ] (Documentation Manager)<br>
+- [X] <b>ProjectTimeline.doc</b>   Submitted documentation for timelines, objectives, and meetings<br>
+- [X] <b>ProjectArchitecture.ppt</b>   Overall software architecture description and images <br>
+ (Documentation Manager)<br>
 - [X] <b>ProjectDocumentation.doc</b>    Putting together (and writing, if necessary) all documentation for the project, both front-end and
                               back-end, in an organized, concise, and appealing fashion<br>
-- [ ] <b>StatementOfWork.doc</b>
+- [X] <b>StatementOfWork.doc</b>
                               Getting all team members to agree to a statement of work at the end of the project, describing what
                               each member contributed<br>
 - [X] <b>Video on course Youtube Page</b>
