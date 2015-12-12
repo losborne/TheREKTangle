@@ -1,4 +1,4 @@
-# TheREKTangle
+# The<red>RE</red><orange>KT</orange><yellow>an</yellow><green>gl</green><blue>e</blue>
 Welcome to our EC327 Final Project repository.
 Above you will find the source code for our project under "TheREKTangle", the Documentation for the project in "ProjectDocumentation", and the release .apk for our app named "TheREKTangle_1.0.apk".
 
