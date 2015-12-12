@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/TheREKTangle.iml" filepath="$PROJECT_DIR$/TheREKTangle.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TheREKTangle/app/app.iml" filepath="$PROJECT_DIR$/TheREKTangle/app/app.iml" />
+    </modules>
+  </component>
+</project>
